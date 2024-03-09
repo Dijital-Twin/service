@@ -1,16 +1,15 @@
-const { handleAsync } = require('../services/error.service')
-const { queryDatabase } = require('../services/db.service')
+const { handleAsync } = require("../services/error.service");
+const modelService = require("../services/model.service");
 
-const health = async (_, res) => {
-    dbResponse = queryDatabase('SELECT NOW()')
-    if (dbResponse) {
-        res.status(200).send('OK')
+const health = async (req, res) => {
+    try {
+        res.status(200).send("OK");
+    } catch (error) {
+        console.log(error);
+        res.status(500).send("System is not healthy");
     }
-    else {
-        throw new Error('Database is not healthy')
-    }
-}
+};
 
 module.exports = {
-    health: handleAsync(health)
-}
+    health: handleAsync(health),
+};

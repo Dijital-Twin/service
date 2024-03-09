@@ -1,34 +1,44 @@
-const express = require('express')
-const cors = require('cors')
-const dotenv = require('dotenv')
-const helmet = require('helmet')
-const bodyParser = require('body-parser')
-const compression = require('compression')
-const errorHandler = require('./src/middleware/errorhandler.middleware')
-const developer = require('./src/routes/developer.route')
+const express = require("express");
+const cors = require("cors");
+const dotenv = require("dotenv");
+const helmet = require("helmet");
+const bodyParser = require("body-parser");
+const compression = require("compression");
+const mongoose = require("mongoose");
+const errorHandler = require("./src/middleware/errorhandler.middleware");
+const developer = require("./src/routes/developer.route");
+const model = require("./src/routes/model.route");
 
-dotenv.config()
+dotenv.config();
 
-const app = express()
-const port = process.env.PORT || 3000
+mongoose
+    .connect(process.env.DB_CONNECT_STRING, {
+        ssl: process.env.SSL === "true",
+    })
+    .then(() => console.log("MongoDB Connected"))
+    .catch((err) => console.log(err));
 
-app.use(cors())
-app.use(errorHandler)
-app.use(compression())
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: true }))
+const app = express();
+const port = process.env.PORT || 3000;
+
+app.use(cors());
+app.use(errorHandler);
+app.use(compression());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(
     helmet({
         crossOriginResourcePolicy: {
-            policy: 'cross-origin',
+            policy: "cross-origin",
         },
     })
-)
+);
 
-app.use('/', developer)
+app.use("/dev", developer);
+app.use("/model", model);
 
 app.listen(port, () => {
-    console.log(`Server is running on port ${port}`)
-})
+    console.log(`Server is running on port ${port}`);
+});
 
-module.exports = app
+module.exports = app;
