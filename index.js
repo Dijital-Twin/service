@@ -8,6 +8,8 @@ const mongoose = require("mongoose");
 const errorHandler = require("./src/middleware/errorhandler.middleware");
 const developer = require("./src/routes/developer.route");
 const model = require("./src/routes/model.route");
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('./swagger.config');
 
 dotenv.config();
 
@@ -20,6 +22,8 @@ mongoose
 
 const app = express();
 const port = process.env.PORT || 3000;
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.use(cors());
 app.use(errorHandler);
