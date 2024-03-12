@@ -8,6 +8,7 @@ const mongoose = require("mongoose");
 const errorHandler = require("./src/middleware/errorhandler.middleware");
 const developer = require("./src/routes/developer.route");
 const model = require("./src/routes/model.route");
+const ai = require("./src/routes/ai.route");
 const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('./swagger.config');
 
@@ -40,6 +41,7 @@ app.use(
 
 app.use("/dev", developer);
 app.use("/model", model);
+app.use("/ai", ai);
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
