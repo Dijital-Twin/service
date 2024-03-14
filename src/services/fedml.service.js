@@ -18,8 +18,8 @@ async function getTestResponse({ testRepsonse }) {
         content: `Just response with following sentence: "${testRepsonse}"`,
       },
     ],
-    model: "mistralai/Mixtral-8x7B-Instruct-v0-1",
-    max_tokens: 512,
+    model: "mistralai/Mistral-7B-Instruct-v0-2",
+    max_tokens: 64,
     temperature: 0.5,
     top_p: 0.7,
   });
@@ -27,6 +27,36 @@ async function getTestResponse({ testRepsonse }) {
   return completion;
 }
 
+const promptTemplate = (context) => {
+  return `You are going to extract necessary questions from context. 
+            You are going to return results in JSON format. 
+            Example: Hey rachel what is your favorite food? I am going to visit your homeland next week. 
+            Expected answer: {questions: [
+                "What is Rachel's favorite food.",
+                "Where is Rachel's homeland"
+            ]}
+            Given context: ${context}`
+}
+
+async function responseToContext({ context }) {
+  const completion = await openai.chat.completions.create({
+    stream: false,
+    messages: [
+      {
+        role: "user",
+        content: promptTemplate(context)
+      },
+    ],
+    model: "mistralai/Mistral-7B-Instruct-v0-2",
+    max_tokens: 32,
+    temperature: 0.5,
+    top_p: 0.7,
+  });
+
+  return completion.choices[0].message.content;
+}
+
 module.exports = {
   getTestResponse,
+  responseToContext
 };
