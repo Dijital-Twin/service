@@ -31,8 +31,29 @@ const gptModel = async (req, res) => {
   }
 };
 
+const pipelineModel = async (req, res) => {
+  try {
+    const extractedQuestions = await gptService.extractQuestionsFromContext(req.body);
+    const parsedExtractedQuestions = JSON.parse(extractedQuestions);
+
+    const questionAnswerPairs = [];
+    for (let i = 0; i < parsedExtractedQuestions.questions.length; i++) {
+      const question = parsedExtractedQuestions.questions[i];
+      const answer = await hayStackService.haystackModel({ question });
+      questionAnswerPairs.push({ sentece_number: i, question, answer: answer.answer });
+    }
+
+    const answerFromFedml = await fedmlService.responseToContext({ context: questionAnswerPairs });
+
+    res.json({ data: answerFromFedml, status: "success" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
 module.exports = {
   baseModel: handleAsync(baseModel),
   haystackModel: handleAsync(haystackModel),
-  gptModel: handleAsync(gptModel)
+  gptModel: handleAsync(gptModel),
+  pipelineModel: handleAsync(pipelineModel)
 };

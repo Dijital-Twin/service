@@ -6,5 +6,6 @@ const aiController = require("../controllers/ai.controller");
 router.route("/").post(aiController.baseModel);
 router.route("/qa").post(aiController.haystackModel);
 router.route("/gpt").post(aiController.gptModel);
+router.route("/pipeline").post(aiController.pipelineModel);
 
 module.exports = router;

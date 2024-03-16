@@ -28,14 +28,15 @@ async function getTestResponse({ testRepsonse }) {
 }
 
 const promptTemplate = (context) => {
-  return `You are going to extract necessary questions from context. 
-            You are going to return results in JSON format. 
-            Example: Hey rachel what is your favorite food? I am going to visit your homeland next week. 
-            Expected answer: {questions: [
-                "What is Rachel's favorite food.",
-                "Where is Rachel's homeland"
-            ]}
-            Given context: ${context}`
+  let prompt = `Combine each question and answer pair into a single, coherent sentence as if Rachel is providing the information directly. Make it a long sentence by connecting these responses. Here are the question and answer pairs:\n`;
+
+  context.forEach(pair => {
+    prompt += `Question: "${pair.question}" Answer: "${pair.answer}".\n`;
+  });
+
+  prompt += `Construct a sentence that includes all the answers in a coherent manner, as if Rachel is speaking. For example, if one question is "What is your favorite food?" and the answer is "Pizza," and another question is "Where is your homeland?" with the answer "USA," the response should be "My favorite food is Pizza, and my homeland is the USA." Use the information provided to construct a similar long sentence.`;
+
+  return prompt;
 }
 
 async function responseToContext({ context }) {
