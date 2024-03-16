@@ -36,13 +36,6 @@ const pipelineModel = async (req, res) => {
     const extractedQuestions = await gptService.extractQuestionsFromContext(req.body);
     const parsedExtractedQuestions = JSON.parse(extractedQuestions);
 
-    // const parsedExtractedQuestions = {
-    //     "questions": [
-    //         "What is Rachel's favorite food?",
-    //         "Where is Rachel's homeland?"
-    //     ]
-    // }
-
     const questionAnswerPairs = [];
     for (let i = 0; i < parsedExtractedQuestions.questions.length; i++) {
       const question = parsedExtractedQuestions.questions[i];
