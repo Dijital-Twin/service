@@ -14,6 +14,7 @@ router.route("/").post(aiController.baseModel);
 router.route("/qa").post(aiController.haystackModel);
 router.route("/gpt").post(aiController.gptModel);
 router.route("/pipeline").post(aiController.pipelineModel);
+router.route("/audio").get(aiController.audioModel);
 
 module.exports = router;
 
@@ -223,6 +224,63 @@ module.exports = router;
  *                 status:
  *                   type: string
  *                   description: The status of the request, indicating success.
+ *       500:
+ *         description: Internal Server Error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   description: The error message detailing why the operation failed.
+ */
+
+/**
+ * @swagger
+ * /ai/audio:
+ *   get:
+ *     tags: [AI Operations]
+ *     summary: Convert Text to Audio
+ *     description: >
+ *       This endpoint converts given text into audio using a specified speaker and language. The service supports multiple 
+ *       speakers and languages, allowing for customization of the audio output. If not specified, the default speaker is "Rachel" and the default language is English (en).
+ *     parameters:
+ *       - in: query
+ *         name: text
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The text to be converted into audio.
+ *       - in: query
+ *         name: speaker
+ *         schema:
+ *           type: string
+ *         description: The desired speaker's voice for the audio output. Defaults to "Rachel" if not specified.
+ *       - in: query
+ *         name: language
+ *         schema:
+ *           type: string
+ *         description: The language of the text. Defaults to English (en) if not specified.
+ *     responses:
+ *       200:
+ *         description: Successfully converted text to audio. The response is an audio stream.
+ *         content:
+ *           audio/wav:
+ *             schema:
+ *               type: string
+ *               format: binary
+ *               description: The audio file stream.
+ *       400:
+ *         description: Bad Request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   description: The error message detailing what was incorrect about the request.
  *       500:
  *         description: Internal Server Error
  *         content:

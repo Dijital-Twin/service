@@ -3,6 +3,7 @@ const aiService = require("../services/ai.service");
 const hayStackService = require("../services/haystack.service");
 const gptService = require("../services/gpt.service");
 const fedmlService = require("../services/fedml.service");
+const audioService = require("../services/audio.service");
 
 const baseModel = async (req, res) => {
   try {
@@ -51,9 +52,26 @@ const pipelineModel = async (req, res) => {
   }
 };
 
+const audioModel = async (req, res) => {
+  try {
+    const text = req.query.text;
+    const speaker = req.query.speaker ?? "Rachel";
+    const language = req.query.language ?? "en";
+
+    if (!text) return res.status(400).json({ error: "Parameter 'text' is required." });
+
+    const response = await audioService.getAudioFromText(text, speaker, language);
+    res.set("Content-Type", "audio/wav");
+    res.send(response);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
 module.exports = {
   baseModel: handleAsync(baseModel),
   haystackModel: handleAsync(haystackModel),
   gptModel: handleAsync(gptModel),
-  pipelineModel: handleAsync(pipelineModel)
+  pipelineModel: handleAsync(pipelineModel),
+  audioModel: handleAsync(audioModel),
 };
