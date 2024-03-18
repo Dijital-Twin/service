@@ -21,7 +21,12 @@ const login = async (req, res) => {
     }
 };
 
+const audioSample = async (req, res) => {
+    res.sendFile("sample_audio.wav", { root: "src/utils" });
+}
+
 module.exports = {
     health: handleAsync(health),
     login: handleAsync(login),
+    audioSample: handleAsync(audioSample),
 };
