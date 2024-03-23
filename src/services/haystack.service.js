@@ -1,5 +1,5 @@
 haystackModel = async (question) => {
-    const response = await fetch(`http://localhost:${process.env.HAYSTACK_PORT}/get_answer`, {
+    const response = await fetch(`${process.env.HAYSTACK_SERVER_URL}/get_answer`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -8,6 +8,7 @@ haystackModel = async (question) => {
     });
     const answer = await response.json();
     return {
+        question: question.question,
         answer: answer.answer,
         score: answer.score
     };
