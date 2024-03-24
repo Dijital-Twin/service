@@ -48,7 +48,7 @@ async function responseToContext({context, previousConversation}) {
         stream: false,
         messages: promptTemplate(context, previousConversation),
         model: "mistralai/Mixtral-8x7B-Instruct-v0-1",
-        max_tokens: 1024,
+        max_tokens: 64,
         top_p: 0.1,
     });
 
