@@ -40,18 +40,29 @@ const pipelineModel = async (req, res) => {
         } catch (e) {
 
         }
+        console.log(parsedExtractedQuestions)
 
         const questionAnswerPairs = [];
-        for (let i = 0; i < parsedExtractedQuestions.questions.length; i++) {
+        for (let i = 0; i < Math.min(parsedExtractedQuestions.questions.length, 10); i++) {
             const question = parsedExtractedQuestions.questions[i];
-            const answer = await hayStackService.haystackModel({question});
-            questionAnswerPairs.push({sentence_number: i, question, answer: answer.answer});
+            try {
+                const answer = await hayStackService.haystackModel({question})
+                if (answer.score > 0.8) {
+                    questionAnswerPairs.push({sentence_number: i, question, answer: answer.answer});
+                }
+            } catch (e) {
+                console.error(e)
+            }
         }
+
+        console.log(questionAnswerPairs)
 
         const answerFromFedml = await fedmlService.responseToContext({
             context: questionAnswerPairs,
             previousConversation: req.body.previousConversation
         });
+
+        console.log(answerFromFedml)
 
         res.json({data: answerFromFedml, status: "success"});
     } catch (err) {
